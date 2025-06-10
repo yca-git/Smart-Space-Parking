@@ -128,7 +128,7 @@ erDiagram
 * [Manacio Pereira de Souza] - [@Steviziho]
 * [Damiao Cazuza de Sousa Netto] - [@netto.s]
 * [David Gabriel Macedo de Araújo ] - [@macedo.david]
-* [] - []
+* [Ronaldo dos Santos Falcão Filho] - [@ronaldo.falcao]
 * [] - []
 * [] - []
 * [] - []
