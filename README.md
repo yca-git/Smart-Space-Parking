@@ -125,10 +125,9 @@ erDiagram
 ## 👥 Autores do Projeto
 
 * [Yuri Cavalcanti Aquino] - [@yuri_aquino03]
-* [Manacio Pereira de Souza] - [@Steviziho]
+* [Manacio Pereira de Souza] - [@manacio.s]
 * [Damiao Cazuza de Sousa Netto] - [@netto.s]
 * [David Gabriel Macedo de Araújo ] - [@macedo.david]
 * [Ronaldo dos Santos Falcão Filho] - [@ronaldo.falcao]
-* [] - []
-* [] - []
-* [] - []
+* [João Vitor Lopes Dos Santos] - [@vitor.lopes1]
+* [Magdiel Pereira de Souza] - [@magdiel.souza]
