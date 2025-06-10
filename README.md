@@ -126,7 +126,7 @@ erDiagram
 
 * [Yuri Cavalcanti Aquino] - [@yuri_aquino03]
 * [Manacio Pereira de Souza] - [@Steviziho]
-* [] - []
+* [David Gabriel Macedo de Araújo ] - [@macedo.david]
 * [] - []
 * [] - []
 * [] - []
