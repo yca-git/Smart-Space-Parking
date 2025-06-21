@@ -6,7 +6,7 @@
 
 O **Smart Space Parking** é um projeto inovador focado em soluções IoT para **Smart Cities**, com o objetivo principal de otimizar a gestão de vagas de estacionamento. Nossa solução integra hardware de baixo custo, comunicação em tempo real e um aplicativo móvel intuitivo para fornecer informações precisas sobre a disponibilidade de vagas.
 
-A fase inicial do projeto consiste no desenvolvimento de um protótipo para monitorar as vagas de estacionamento da instituição **IFRN**, em Natal, Rio Grande do Norte. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação para um banco de dados, que por sua vez, alimenta um aplicativo Android para os usuários.
+A fase inicial do projeto consiste no desenvolvimento de uma solução com dispositivo IoT para monitorar as vagas de um estacionamento e um aplicativo Mobile para mostrar os estados de ocupação dessas vagas. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação para um banco de dados, que por sua vez, alimenta um aplicativo Android para os usuários.
 
 ---
 
