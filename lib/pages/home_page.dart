@@ -2,7 +2,7 @@
 
 // Importação dos pacotes necessários
 import 'package:flutter/material.dart';
-import 'vagas_page.dart';            // Página genérica de vagas
+import 'vagas_page.dart';            // Página específica para João Câmara
 import 'vagas_zn_page.dart';        // Página específica para Natal ZN
 import 'vagas_cnat_page.dart';      // Página específica para CNAT
 import '../utils/fade_page_route.dart'; // Rota personalizada com transição em fade
@@ -35,14 +35,14 @@ class HomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // Método build para construir a tela
     // Cores principais utilizadas
     const azulEscuro = Color(0xFF0D47A1); // Cor do cabeçalho
     const azulBotao = Color(0xFF1976D2);  // Cor dos botões
 
-    return Scaffold(
+    return Scaffold( // Tela principal
       backgroundColor: Colors.white, // Cor de fundo da página
-      body: SafeArea(
+      body: SafeArea( // Permite que o conteúdo esteja dentro dos limites da tela
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
