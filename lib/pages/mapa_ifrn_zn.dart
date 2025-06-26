@@ -2,9 +2,8 @@ import 'package:estacionamento_app/utils/fade_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlong;
+import '../utils/header.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import para abrir URLs
-import 'vagas_cnat_page.dart'; // Tela de Vagas específica para CNAT
-import '../utils/fade_page_route.dart'; // Rota personalizada com transição em fade
 import 'vagas_zn_page.dart';
 
 // Coordenadas do IFRN CNAT (Campus Natal - Central)
@@ -52,38 +51,8 @@ class _mapaIFRNzState extends State<mapaIFRNz> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 1. CABEÇALHO PADRÃO
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              color: azulEscuro,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Stack( // Ícone de localização com carro
-                    alignment: Alignment.center,
-                    children: [
-                      const Icon(Icons.location_on, size: 40, color: Colors.white),
-                      Container(
-                        width: 18, height: 18,
-                        decoration: const BoxDecoration(shape: BoxShape.circle, color: azulEscuro),
-                      ),
-                      const Icon(Icons.directions_car, size: 12, color: Colors.white),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'SMART SPACE PARKING',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Cabeçalho
+            const HeaderWidget(),
 
             // 2. CONTAINER COM BOTÕES (VOLTAR, VAGAS, MAPA)
             Container(
@@ -111,33 +80,32 @@ class _mapaIFRNzState extends State<mapaIFRNz> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ElevatedButton(
+                      OutlinedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             FadePageRoute(page: const VagasZNPage()),
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1976D2),
-                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: const Text('Vagas', style: TextStyle(color: Colors.white)),
-                      ),
-                      const SizedBox(width: 10), // Espaçamento entre os botões
-                      OutlinedButton(
-                        onPressed: () {},
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Color(0xFF1976D2)),
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         ),
-                        child: const Text('Mapa', style: TextStyle(color: Color(0xFF1976D2))),
+                        child: const Text('Vagas', style: TextStyle(color: Color(0xFF1976D2))),
+                      ),
+                      const SizedBox(width: 10), // Espaçamento entre os botões
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1976D2),
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        ),
+                        child: const Text('Mapa', style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
-
                   // 3. Um Widget de "espaço vazio" do mesmo tamanho do IconButton para balancear,
                   //    ou um SizedBox com largura específica se precisar de mais controle.
                   //    Isso ajuda a manter o grupo central realmente no centro.

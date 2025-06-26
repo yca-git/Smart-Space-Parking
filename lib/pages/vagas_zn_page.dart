@@ -158,24 +158,34 @@ class _VagasZNPageState extends State<VagasZNPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
-                          Container(
-                            width: 2,
-                            height: 80,
-                            color: Colors.yellow,
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                          ),
                           _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
                         ],
                       ),
 
                       // Linha amarela horizontal separando as linhas (exceto a última)
                       if (i < 4)
-                        Container(
-                          height: 2,
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          color: Colors.yellow,
-                          width: double.infinity,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 2,
+                                  width: 100, // Reduzir para evitar overflow
+                                  color: Colors.yellow[400],
+                                ),
+                                Container(
+                                  height: 2,
+                                  width: 100,
+                                  color: Colors.yellow[400],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+
                     ],
                   );
                 },

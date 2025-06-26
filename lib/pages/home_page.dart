@@ -4,7 +4,8 @@
 import 'package:flutter/material.dart';
 import 'vagas_page.dart';            // Página específica para João Câmara
 import 'vagas_zn_page.dart';        // Página específica para Natal ZN
-import 'vagas_cnat_page.dart';      // Página específica para CNAT
+import 'vagas_cnat_page.dart';
+import '../utils/header.dart';// Rota para cabeçalho padrão
 import '../utils/fade_page_route.dart'; // Rota personalizada com transição em fade
 
 // Definição da HomePage, que é um StatelessWidget (não precisa de estado)
@@ -17,14 +18,14 @@ class HomePage extends StatelessWidget {
 
     // Decide qual página abrir com base no nome do estacionamento
     if (nomeEstacionamento == 'IFRN - JOÃO CÂMARA') {
-      destino = VagasPage(nomeEstacionamento: nomeEstacionamento);
+      destino = const VagasJCPage();
     } else if (nomeEstacionamento == 'IFRN - NATAL ZN') {
       destino = const VagasZNPage();
     } else if (nomeEstacionamento == 'IFRN - NATAL CNAT') {
       destino = const VagasCNATPage();
     } else {
       // Fallback para página genérica
-      destino = VagasPage(nomeEstacionamento: nomeEstacionamento);
+      destino = const VagasJCPage();
     }
 
     // Abre a nova tela com transição em fade
@@ -47,50 +48,7 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Cabeçalho com ícone e título
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              color: azulEscuro,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Ícone de localização com carro dentro
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                      Container(
-                        width: 18,
-                        height: 18,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: azulEscuro,
-                        ),
-                      ),
-                      const Icon(
-                        Icons.directions_car,
-                        size: 12,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'SMART SPACE PARKING',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const HeaderWidget(),
 
             const SizedBox(height: 40), // Espaço abaixo do cabeçalho
 
