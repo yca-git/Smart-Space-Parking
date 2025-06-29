@@ -121,6 +121,17 @@ erDiagram
 ```
 
 ---
+## Telas 
+#### Home
+
+#### Estacionamento
+
+#### Vagas
+
+#### Mapa
+
+#### Google Maps
+---
 
 ## 👥 Autores do Projeto
 
