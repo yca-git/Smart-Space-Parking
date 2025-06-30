@@ -45,7 +45,7 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                   // 1. Botão de Voltar (será alinhado à esquerda)
                   IconButton( // Botão de voltar
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(page: const HomePage()
                         ),
@@ -75,7 +75,7 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                       const SizedBox(width: 10), // Espaçamento entre os botões
                       OutlinedButton( // Botão "Mapa"
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             FadePageRoute(page: const MapaIFRNCNATPage()),
                           );

@@ -42,7 +42,7 @@ class _VagasPageState extends State<VagasJCPage> {
                   // 1. Botão de Voltar (será alinhado à esquerda)
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(page: const HomePage()
                         ),
@@ -72,7 +72,7 @@ class _VagasPageState extends State<VagasJCPage> {
                       const SizedBox(width: 10), // Espaçamento entre os botões
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             FadePageRoute(page: const MapaIFRNJCPage())
                           );

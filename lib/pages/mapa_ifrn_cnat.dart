@@ -64,7 +64,7 @@ class _MapaIFRNCNATPageState extends State<MapaIFRNCNATPage> {
                   // 1. Botão de Voltar, leva até pag de vagas
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(page: const VagasCNATPage()),); //efeito fade
                     },
@@ -81,7 +81,7 @@ class _MapaIFRNCNATPageState extends State<MapaIFRNCNATPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       OutlinedButton(
-                        onPressed: () {Navigator.push(
+                        onPressed: () {Navigator.pushReplacement(
                           context,
                           FadePageRoute(page: const VagasCNATPage()),
                         );

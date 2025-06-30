@@ -64,7 +64,7 @@ class _mapaIFRNzState extends State<mapaIFRNz> {
                   // 1. Botão de Voltar, leva até pag de vagas
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(page: const VagasZNPage()),); //efeito fade
                     },
@@ -82,7 +82,7 @@ class _mapaIFRNzState extends State<mapaIFRNz> {
                     children: [
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             FadePageRoute(page: const VagasZNPage()),
                           );

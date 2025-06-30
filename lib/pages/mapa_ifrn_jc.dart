@@ -57,7 +57,7 @@ class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(page: const VagasJCPage()),);
                     },
@@ -69,7 +69,7 @@ class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       OutlinedButton( // Botão de Vagas
-                        onPressed: () {Navigator.push(
+                        onPressed: () {Navigator.pushReplacement(
                           context,
                           FadePageRoute(page: const VagasJCPage()),
                           );

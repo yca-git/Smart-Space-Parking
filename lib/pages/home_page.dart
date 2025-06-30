@@ -36,110 +36,120 @@ class HomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) { // Método build para construir a tela
-    // Cores principais utilizadas
-    const azulEscuro = Color(0xFF0D47A1); // Cor do cabeçalho
-    const azulBotao = Color(0xFF1976D2);  // Cor dos botões
+  Widget build(BuildContext context) {
+    const azulEscuro = Color(0xFF0D47A1);
+    const azulBotao = Color(0xFF1976D2);
 
-    return Scaffold( // Tela principal
-      backgroundColor: Colors.white, // Cor de fundo da página
-      body: SafeArea( // Permite que o conteúdo esteja dentro dos limites da tela
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Cabeçalho com ícone e título
-            const HeaderWidget(),
-
-            const SizedBox(height: 40), // Espaço abaixo do cabeçalho
-
-            // Texto centralizado instruindo o usuário
-            const Center(
-              child: Text(
-                'SELECIONE O ESTACIONAMENTO',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  letterSpacing: 1.2,
+    return WillPopScope( // Intercepta o botão "voltar"
+      onWillPop: () async {
+        // Mostra um alerta perguntando se deseja sair do app
+        final shouldExit = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Sair do aplicativo'),
+            content: const Text('Você deseja realmente sair do aplicativo?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Não'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Sim'),
+              ),
+            ],
+          ),
+        );
+        return shouldExit ?? false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeaderWidget(),
+              const SizedBox(height: 40),
+              const Center(
+                child: Text(
+                  'SELECIONE O ESTACIONAMENTO',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    letterSpacing: 1.2,
+                  ),
                 ),
               ),
-            ),
-
-            const SizedBox(height: 40), // Espaço entre texto e botões
-
-            // Botões de seleção de campus
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  // Botão 1
-                  ElevatedButton(
-                    onPressed: () => _openVagasPage(context, 'IFRN - JOÃO CÂMARA'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: azulBotao,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+              const SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => _openVagasPage(context, 'IFRN - JOÃO CÂMARA'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: azulBotao,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        minimumSize: const Size(double.infinity, 60),
                       ),
-                      minimumSize: const Size(double.infinity, 60),
-                    ),
-                    child: const Text(
-                      'IFRN - JOÃO CÂMARA',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'IFRN - JOÃO CÂMARA',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Botão 2
-                  ElevatedButton(
-                    onPressed: () => _openVagasPage(context, 'IFRN - NATAL ZN'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: azulBotao,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _openVagasPage(context, 'IFRN - NATAL ZN'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: azulBotao,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        minimumSize: const Size(double.infinity, 60),
                       ),
-                      minimumSize: const Size(double.infinity, 60),
-                    ),
-                    child: const Text(
-                      'IFRN - NATAL ZN',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'IFRN - NATAL ZN',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Botão 3
-                  ElevatedButton(
-                    onPressed: () => _openVagasPage(context, 'IFRN - NATAL CNAT'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: azulBotao,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => _openVagasPage(context, 'IFRN - NATAL CNAT'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: azulBotao,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        minimumSize: const Size(double.infinity, 60),
                       ),
-                      minimumSize: const Size(double.infinity, 60),
-                    ),
-                    child: const Text(
-                      'IFRN - NATAL CNAT',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'IFRN - NATAL CNAT',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

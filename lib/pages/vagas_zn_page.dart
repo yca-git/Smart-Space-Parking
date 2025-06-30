@@ -44,7 +44,7 @@ class _VagasZNPageState extends State<VagasZNPage> {
                   // 1. Botão de Voltar, pressionado leva a página inicial com transição em fade
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         FadePageRoute(
                             page: const HomePage()
@@ -75,7 +75,7 @@ class _VagasZNPageState extends State<VagasZNPage> {
                       const SizedBox(width: 10), // Espaçamento entre os botões
                       OutlinedButton( // Botão Mapa, pressionado leva a página do mapa zn com transição em fade
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             FadePageRoute(
                               page: const mapaIFRNz()
