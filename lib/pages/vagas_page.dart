@@ -1,20 +1,19 @@
 // Tela de vagas para o campus João Câmara 
 import 'dart:math';
+import 'package:estacionamento_app/utils/fade_page_route.dart';
 import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
 import 'mapa_ifrn_jc.dart'; // Mapa do campus João Câmara
 import 'home_page.dart'; // Página inicial
 
-class VagasPage extends StatefulWidget {
-  final String nomeEstacionamento; // Nome do estacionamento para exibir
-
-  const VagasPage({super.key, required this.nomeEstacionamento});
+class VagasJCPage extends StatefulWidget {
+  const VagasJCPage({super.key});
 
   @override
-  State<VagasPage> createState() => _VagasPageState();
+  State<VagasJCPage> createState() => _VagasPageState();
 }
 
-class _VagasPageState extends State<VagasPage> {
+class _VagasPageState extends State<VagasJCPage> {
   late List<bool> vagasDisponiveis;
 
   @override
@@ -43,10 +42,9 @@ class _VagasPageState extends State<VagasPage> {
                   // 1. Botão de Voltar (será alinhado à esquerda)
                   IconButton(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()
+                        FadePageRoute(page: const HomePage()
                         ),
                       );
                     },
@@ -73,7 +71,12 @@ class _VagasPageState extends State<VagasPage> {
                       ),
                       const SizedBox(width: 10), // Espaçamento entre os botões
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            FadePageRoute(page: const MapaIFRNJCPage())
+                          );
+                        },
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Color(0xFF1976D2)),
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
@@ -123,9 +126,9 @@ class _VagasPageState extends State<VagasPage> {
             const SizedBox(height: 10),
 
             // Título que exibe o nome do estacionamento recebido por parâmetro
-            Text(
-              widget.nomeEstacionamento,
-              style: const TextStyle(
+            const Text(
+              'IFRN - JOÃO CÂMARA',
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -151,12 +154,7 @@ class _VagasPageState extends State<VagasPage> {
                           _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
 
                           // Linha amarela vertical entre as vagas
-                          Container(
-                            width: 2,
-                            height: 80,
-                            color: Colors.yellow,
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                          ),
+
 
                           _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
                         ],
@@ -164,12 +162,34 @@ class _VagasPageState extends State<VagasPage> {
 
                       // Linha amarela horizontal entre linhas, exceto a última
                       if (i < 4)
-                        Container(
-                          height: 2,
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          color: Colors.yellow,
-                          width: double.infinity,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  height: 2,
+                                  width: 100, // Reduzir para evitar overflow
+                                  color: Colors.yellow[400],
+                                ),
+                                Container(
+                                  height: 2,
+                                  width: 100,
+                                  color: Colors.yellow[400],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+
+                      //Container(
+                          //height: 2,
+                          //margin: const EdgeInsets.symmetric(vertical: 6),
+                          //color: Colors.yellow,
+                          //width: double.infinity,
+                        //),
                     ],
                   );
                 },

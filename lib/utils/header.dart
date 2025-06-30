@@ -10,7 +10,7 @@ class HeaderWidget extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 16),
       color: azulEscuro,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
