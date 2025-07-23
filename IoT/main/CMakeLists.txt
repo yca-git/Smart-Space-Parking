@@ -28,49 +28,44 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(smart-space-parking-projeto-integrador C CXX ASM)
+project(main C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(
-    smart-space-parking-projeto-integrador 
-    smart-space-parking-projeto-integrador.c
+add_executable(main main.c
     ultrassonico/ultrassonico.c
     display/display.c
     display/ssd1306.c
     rede/wifi/src/wifi.c
-    rede/mqtt/src/mqtt.c
-     )
+    rede/mqtt/src/mqtt.c )
 
-pico_set_program_name(smart-space-parking-projeto-integrador "smart-space-parking-projeto-integrador")
-pico_set_program_version(smart-space-parking-projeto-integrador "0.1")
-
-# Generate PIO header
-pico_generate_pio_header(smart-space-parking-projeto-integrador ${CMAKE_CURRENT_LIST_DIR}/blink.pio)
+pico_set_program_name(main "main")
+pico_set_program_version(main "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(smart-space-parking-projeto-integrador 0)
-pico_enable_stdio_usb(smart-space-parking-projeto-integrador 1)
+pico_enable_stdio_uart(main 0)
+pico_enable_stdio_usb(main 1)
 
 # Add the standard library to the build
-target_link_libraries(smart-space-parking-projeto-integrador
+target_link_libraries(main
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(smart-space-parking-projeto-integrador PRIVATE
+target_include_directories(main PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(smart-space-parking-projeto-integrador 
+target_link_libraries(main 
+        pico_cyw43_arch_lwip_threadsafe_background
+        #pico_cyw43_arch_lwip_poll        
         hardware_i2c
         hardware_pio
-        pico_cyw43_arch_lwip_threadsafe_background
         pico_lwip_mqtt
         )
 
-pico_add_extra_outputs(smart-space-parking-projeto-integrador)
+pico_add_extra_outputs(main)
 

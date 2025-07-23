@@ -15,8 +15,8 @@ int main() {
     clear_display();
     print_apresentacao();
     
-    // Configurações para broker laica
-    
+    // Configurações para o broker laica
+    /*
     char mqtt_buffer[100];
     const char *broker_ip = "192.168.10.3";
     const char *client_id = "sspVaga01";
@@ -25,20 +25,18 @@ int main() {
     const char *pass_mqtt = "ha.laica.cnat";
     const char *wifi_ssid = "Laica-IoT";
     const char *wifi_pass = "Laica321";
-    
-
-    // Configurações para broker publico
-    /*
+    */
+   
+   // Configurações para broker yuri
     char mqtt_buffer[100];
-    const char *broker_ip = "test.mosquitto.org";
-    const char *client_id = "sspVaga01";
-    const char *topic_status = "ha/ssp/vaga/01/status";
-    const char *user_mqtt = "";
-    const char *pass_mqtt = "";
+    const char *broker_ip = "179.156.10.22";
+    const char *client_id = "ssp";
+    const char *topic_status = "yuri/ssp/vaga/01/status";
+    const char *user_mqtt = "yuri";
+    const char *pass_mqtt = "yurimb01";
     const char *wifi_ssid = "YCA";
     const char *wifi_pass = "00000000";
-    */
-
+   
     // Estados de controle
     bool wifi_connected = false;
     bool mqtt_connected = false;
@@ -53,7 +51,7 @@ int main() {
             print_oled("Conectando", "WiFi...", wifi_ssid);
             
             connect_to_wifi(wifi_ssid, wifi_pass, NULL);
-            sleep_ms(3000); // Aguarda 3 segundos
+            sleep_ms(5000); // Aumentar de 3000 para 5000
             
             if (is_connected()) {
                 printf("✅ WiFi conectado com sucesso!\n");
@@ -63,24 +61,20 @@ int main() {
             } else {
                 printf("❌ Falha na conexão WiFi. Tentando novamente...\n");
                 print_oled("WiFi", "Erro!", "Tentando novamente");
-                sleep_ms(5000);
+                sleep_ms(10000); // Aumentar de 5000 para 10000
                 continue;
             }
         }
         
         // PASSO 2: CONECTAR AO BROKER MQTT
-        if (wifi_connected && !mqtt_connected) {
+        while (wifi_connected && !mqtt_connected) {
             printf("2️⃣ Conectando ao broker MQTT %s...\n", broker_ip);
+            print_oled("Conectando", "MQTT...", broker_ip);
             
-            mqtt_setup("bitdog5", "192.168.10.3", "ha", "ha.laica.cnat", mqtt_buffer);
+            mqtt_setup("ssp", "179.156.10.22", "yuri", "yurimb01", mqtt_buffer);
             printf("Status MQTT: %s\n", mqtt_buffer);
-            sleep_ms(10000); // Aguarda 10 segundos
-           
-            while (!mqtt_is_connected()) {
-                printf("Tentando conectar ao MQTT...\n");
-                print_oled("Conectando", "MQTT...", broker_ip);
-                mqtt_setup(client_id, broker_ip, user_mqtt, pass_mqtt, mqtt_buffer);
-            }
+            sleep_ms(15000); // Aumentar de 10000 para 15000
+            
             if (mqtt_is_connected()) {
                 printf("✅ MQTT conectado com sucesso!\n");
                 mqtt_connected = true;
@@ -89,8 +83,8 @@ int main() {
             } else {
                 printf("❌ Falha na conexão MQTT. Tentando novamente...\n");
                 print_oled("MQTT", "Erro!", "Tentando novamente");
-                sleep_ms(5000);
-                continue; // Ignora o restante do loop e tenta novamente
+                sleep_ms(15000); // Aumentar de 5000 para 15000
+                continue;
             }
         }
         
@@ -105,27 +99,36 @@ int main() {
                 const char *status_msg = current_state ? "LIVRE" : "OCUPADA";
                 
                 printf("Enviando para broker: tópico='%s', mensagem='%s'\n", topic_status, status_msg);
-                mqtt_comm_publish(topic_status, (const uint8_t*)status_msg, strlen(status_msg));
                 
-                // Atualiza display
+                // Enviar mensagem MQTT
+                mqtt_comm_publish(topic_status, (const uint8_t*)status_msg, strlen(status_msg));
+                printf("✅ Status enviado!\n");
                 print_oled(status_msg, "Enviado MQTT", "");
                 
+                // Aguardar um pouco após o envio
+                sleep_ms(1000);
+                
                 last_state = current_state;
-                printf("✅ Status enviado com sucesso!\n");
             }
             
-            // Verifica se as conexões ainda estão ativas
-            if (!is_connected()) {
-                printf("⚠️ WiFi desconectado!\n");
-                wifi_connected = false;
-                mqtt_connected = false;
-            } else if (!mqtt_is_connected()) {
-                printf("⚠️ MQTT desconectado!\n");
-                mqtt_connected = false;
+            // Verificações de conexão com timeouts
+            static uint32_t last_check = 0;
+            uint32_t now = to_ms_since_boot(get_absolute_time());
+            
+            if (now - last_check > 60000) { // Verificar a cada 60 segundos
+                if (!is_connected()) {
+                    printf("⚠️ WiFi desconectado!\n");
+                    wifi_connected = false;
+                    mqtt_connected = false;
+                } else if (!mqtt_is_connected()) {
+                    printf("⚠️ MQTT desconectado!\n");
+                    mqtt_connected = false;
+                }
+                last_check = now;
             }
         }
         
-        sleep_ms(1000); // Aguarda 1 segundo
+        sleep_ms(5000); // Aumentar de 2000 para 5000
     }
 
     return 0;

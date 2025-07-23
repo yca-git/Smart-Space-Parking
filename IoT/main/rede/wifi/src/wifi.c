@@ -145,9 +145,9 @@ bool is_connected(){
         return false;
     }
     
-    // Teste de conectividade real: faz ping no gateway a cada 5 segundos
+    // Teste de conectividade real: faz ping no gateway a cada 300 segundos
     absolute_time_t now = get_absolute_time();
-    if (absolute_time_diff_us(last_ping_time, now) > 500000000) { // 5 segundos
+    if (absolute_time_diff_us(last_ping_time, now) > 300000000) { // 300 segundos
         last_ping_time = now;
         
         printf("Testando conectividade com ping...\n");
