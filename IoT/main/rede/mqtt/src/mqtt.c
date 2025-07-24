@@ -52,13 +52,14 @@ void mqtt_setup(const char *client_id, const char *broker_ip, const char *user, 
     }
     ip_addr_t broker_addr;  // Estrutura para armazenar o IP do broker
     sniprintf(text_buffer, 100,"Conectando ao broker\n");
+
     // Converte o IP de string para formato numérico
-    if (!ip4addr_aton(broker_ip, &broker_addr)) {
+    if (!ip4addr_aton(broker_ip, &broker_addr)) { // retorna 1 se o endereço for válido
         sniprintf(text_buffer, 100, "Erro no IP\n");
         return;
     }
 
-    if (client != NULL) {
+    if (client != NULL) { // Se já existe um cliente, desconecta e libera
         mqtt_disconnect(client);
         mqtt_client_free(client);
         client = NULL;
@@ -97,7 +98,7 @@ void mqtt_setup(const char *client_id, const char *broker_ip, const char *user, 
  *   - result: código de resultado da operação */
 static void mqtt_pub_request_cb(void *arg, err_t result) {
     if (result == ERR_OK) {
-        printf("Publicação MQTT enviada com sucesso!\n");
+        printf("✅ Publicação MQTT enviada com sucesso!\n");
     } else {
         printf("Erro ao publicar via MQTT: %d\n", result);
     }
@@ -126,7 +127,7 @@ void mqtt_comm_publish(const char *topic, const uint8_t *data, size_t len) {
     }
 }
 
-bool mqtt_is_connected(){
+bool mqtt_is_connected(){ // resolve erro de "PANIC client != NULL"
     if (mqtt_client_is_connected(client)) return true;
     else return false;
 }
