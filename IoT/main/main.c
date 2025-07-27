@@ -147,5 +147,4 @@ int main() {
 
     return 0;
 }
-// O codigo aceita endereço de ip via dns ou precisa fazer a resolução DNS?
-// O envio para o broker para de ocorrer quando o teste de ping de wifi ocorre. (E se conectar ao broker novamente depois do teste de ping?)
+// O codigo aceita endereço de ip e dns 
