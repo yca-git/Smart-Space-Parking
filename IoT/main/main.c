@@ -32,15 +32,24 @@ int main() {
     
 
     /* Configuraçções para broker yuri*/
+    // char mqtt_buffer[100];
+    // const char *broker_ip = "179.156.10.22";
+    // const char *client_id = "sspVaga01";
+    // const char *topic_status = "yuri/ssp/vaga/01/status";
+    // const char *user_mqtt = "yuri";
+    // const char *pass_mqtt = "yurimb01";
+    // const char *wifi_ssid = "YCA";
+    // const char *wifi_pass = "00000000";
+   
+    // Configurações para broker publico
     char mqtt_buffer[100];
-    const char *broker_ip = "179.156.10.22";
+    const char *broker_ip = "test.mosquitto.org"; // Broker público
     const char *client_id = "sspVaga01";
-    const char *topic_status = "yuri/ssp/vaga/01/status";
-    const char *user_mqtt = "yuri";
-    const char *pass_mqtt = "yurimb01";
+    const char *topic_status = "ssp/vaga/01/status";
+    const char *user_mqtt = NULL;  // Sem autenticação para broker público
+    const char *pass_mqtt = NULL;  // Sem autenticação para broker público
     const char *wifi_ssid = "YCA";
     const char *wifi_pass = "00000000";
-   
 
     // Estados de controle
     bool wifi_connected = false;

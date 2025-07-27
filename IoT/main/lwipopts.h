@@ -24,7 +24,7 @@
 #define MEMP_NUM_ARP_QUEUE          10
 #define PBUF_POOL_SIZE              24
 
-//Adicções por YCA para corrigir erro panic timeout
+//Principais adições por YCA para corrigir erro panic timeout
 #define MEMP_NUM_SYS_TIMEOUT        16 
 #define MEMP_NUM_NETCONN            8
 #define MEMP_NUM_NETBUF             8
