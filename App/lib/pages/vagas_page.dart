@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
 import 'mapa_ifrn_jc.dart'; // Mapa do campus João Câmara
 import 'home_page.dart'; // Página inicial
+import 'package:estacionamento_app/mqtt_service.dart';
 
 class VagasJCPage extends StatefulWidget {
   const VagasJCPage({super.key});
@@ -14,14 +15,30 @@ class VagasJCPage extends StatefulWidget {
 }
 
 class _VagasPageState extends State<VagasJCPage> {
-  late List<bool> vagasDisponiveis;
+  final MqttService mqttService = MqttService();
+  // Aqui vamos armazenar o estado das vagas
+  Map<String, String> vagaStatus = {};
 
   @override
   void initState() {
     super.initState();
+    mqttService.onMessageReceived = (topic, message) {
+      setState(() {
+        vagaStatus[topic] = message;
+      });
+    };
+    mqttService.connect();
+    super.initState();
     // Inicializa as vagas com status aleatório (disponível ou ocupada)
     vagasDisponiveis = List.generate(10, (_) => Random().nextBool());
   }
+
+  @override
+  void dispose() {
+    mqttService.disconnect();
+    super.dispose();
+  }
+  late List<bool> vagasDisponiveis;
 
   @override
   Widget build(BuildContext context) {

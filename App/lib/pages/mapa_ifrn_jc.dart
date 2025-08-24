@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as latlong;
+import '../mqtt_service.dart';
 import '../utils/header.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:estacionamento_app/pages/vagas_page.dart';
 import 'package:estacionamento_app/utils/fade_page_route.dart';
+import '../mqtt_service.dart';
 
 // Coordenadas do IFRN João Câmara
 const latlong.LatLng _coordenadasIFRNJC = latlong.LatLng(-5.543635, -35.797856);
@@ -14,12 +16,42 @@ const String _googleMapsUrlIFRNJC = "https://maps.app.goo.gl/ZMMH56dCFZVicQLD9";
 class MapaIFRNJCPage extends StatefulWidget {
   const MapaIFRNJCPage({super.key});
 
+
   @override
   State<MapaIFRNJCPage> createState() => _MapaIFRNJCPageState();
 }
 
-class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
+  class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
   final MapController _mapController = MapController();
+
+  // 1️⃣ Declarar o mapa de status das vagas
+  Map<String, String> vagaStatus = {};
+
+  // 2️⃣ Criar instância do serviço MQTT
+  final MqttService mqttService = MqttService();
+
+  @override
+  void initState() {
+    super.initState();
+
+    mqttService.onMessageReceived = (topic, message) {
+      // Atualiza o mapa de status se quiser
+      setState(() {
+        vagaStatus[topic] = message;
+      });
+
+      // Imprime no console
+      print('Mensagem recebida -> Tópico: $topic, Mensagem: $message');
+    };
+
+    mqttService.connect();
+  }
+
+  @override
+  void dispose() {
+    mqttService.disconnect();
+    super.dispose();
+  }
 
   Future<void> _abrirNoGoogleMaps() async {
     final Uri url = Uri.parse(_googleMapsUrlIFRNJC);
@@ -101,7 +133,7 @@ class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
                 ],
               ),
             ),
-
+            //
             const SizedBox(height: 16),
 
             Padding(
@@ -118,7 +150,6 @@ class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
             ),
 
             const SizedBox(height: 12),
-
             // Mapa
             Expanded(
               child: Padding(
@@ -179,9 +210,9 @@ class _MapaIFRNJCPageState extends State<MapaIFRNJCPage> {
                 ),
               ),
             ),
-          ],
-        ),
+        ]
       ),
+    )
     );
   }
 }
