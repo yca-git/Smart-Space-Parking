@@ -61,7 +61,6 @@ target_include_directories(main PRIVATE
 # Add any user requested libraries
 target_link_libraries(main 
         pico_cyw43_arch_lwip_threadsafe_background
-        #pico_cyw43_arch_lwip_poll        
         hardware_i2c
         hardware_pio
         pico_lwip_mqtt
