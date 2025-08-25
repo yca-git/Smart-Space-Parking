@@ -19,9 +19,16 @@ int main() {
     clear_display();
     print_apresentacao();
     
-    // Configurações para o broker laica
+    char mqtt_buffer[100];
     
-    // char mqtt_buffer[100];
+    // const char *wifi_ssid = "brisa-4299178"; //Coloque aqui o SSID do wifi
+    // const char *wifi_pass = "dkjwjo48"; //Coloque aqui a senha do wifi
+    
+    const char *wifi_ssid = "YCA"; //Coloque aqui o SSID do wifi
+    const char *wifi_pass = "00000000"; //Coloque aqui a senha do wifi
+    
+    // Configurações para o broker laica
+
     // const char *broker_ip = "192.168.10.3";
     // const char *client_id = "sspVaga01";
     // const char *topic_status = "ha/ssp/vaga/01/status";
@@ -30,31 +37,44 @@ int main() {
     // const char *wifi_ssid = "Laica-IoT";
     // const char *wifi_pass = "Laica321";
     
+    //configurações para broker laica dns
+    const char *broker_ip = "mqtt.iot.natal.br"; // Broker externo Laica
+    const char *client_id = "ssp";
+    const char *user_mqtt = "desafio09"; // Coloque aqui o usuário do MQTT
+    const char *pass_mqtt = "desafio09.laica"; // Coloque aqui a senha do MQTT
+   
 
     /* Configuraçções para broker yuri*/
-    // char mqtt_buffer[100];
     // const char *broker_ip = "179.156.10.22";
     // const char *client_id = "sspVaga01";
-    // const char *topic_status = "yuri/ssp/vaga/01/status";
     // const char *user_mqtt = "yuri";
-    // const char *pass_mqtt = "yurimb01";
-    // const char *wifi_ssid = "YCA";
-    // const char *wifi_pass = "00000000";
+    // const char *pass_mqtt = "yurimb01";  
    
     // Configurações para broker publico
-    char mqtt_buffer[100];
-    const char *broker_ip = "test.mosquitto.org"; // Broker público
-    const char *client_id = "sspVaga01";
-    const char *topic_status = "ssp/vaga/01/status";
-    const char *user_mqtt = NULL;  // Sem autenticação para broker público
-    const char *pass_mqtt = NULL;  // Sem autenticação para broker público
-    const char *wifi_ssid = "YCA";
-    const char *wifi_pass = "00000000";
+    // char mqtt_buffer[100];
+    // const char *broker_ip = "test.mosquitto.org"; // Broker público
+    // const char *client_id = "sspVaga01";
+    // const char *topic_status = "ssp/vaga/01/status";
+    // const char *user_mqtt = NULL;  // Sem autenticação para broker público
+    // const char *pass_mqtt = NULL;  // Sem autenticação para broker público
+    // const char *wifi_ssid = "YCA";
+    // const char *wifi_pass = "00000000";
+    
+    // Tópicos para as 5 vagas
+    const char *topics_status[NUM_SENSORES] = {
+        "ha/desafio09/yuri.aquino/ssp/vaga01",
+        "ha/desafio09/yuri.aquino/ssp/vaga02",
+        "ha/desafio09/yuri.aquino/ssp/vaga03",
+        "ha/desafio09/yuri.aquino/ssp/vaga04",
+        "ha/desafio09/yuri.aquino/ssp/vaga05"
+    };
 
     // Estados de controle
     bool wifi_connected = false;
     bool mqtt_connected = false;
-    bool last_state = false;
+    //bool last_states[NUM_SENSORES] = {false, false, false, false, false}; // Estados anteriores das 5 vagas
+    bool last_states[NUM_SENSORES] = {false, false, false}; // Estados anteriores das 3 vagas
+
 
     printf("=== INICIANDO SISTEMA SMART PARKING ===\n");
 
@@ -87,7 +107,7 @@ int main() {
             
             mqtt_setup(client_id, broker_ip, user_mqtt, pass_mqtt, mqtt_buffer);
             printf("Status MQTT: %s\n", mqtt_buffer);
-            sleep_ms(15000); // Aumentar de 10000 para 15000
+            sleep_ms(15000); 
             
             if (mqtt_is_connected()) {
                 printf("✅ MQTT conectado com sucesso!\n");
@@ -102,34 +122,62 @@ int main() {
             }
         }
         
-        // PASSO 3: LEITURA E ENVIO DO STATUS DA VAGA
+        // PASSO 3: LEITURA E ENVIO DO STATUS DAS VAGAS
         if (wifi_connected && mqtt_connected) {
-            bool current_state = verifica_estado();
+            printf("3️⃣ Verificando estado de todas as vagas...\n");
             
-            // Se o estado mudou, envia para o broker
-            if (current_state != last_state) {
-                printf("3️⃣ Estado da vaga mudou: %s\n", current_state ? "LIVRE" : "OCUPADA");
+            // Verificar o estado de todos os sensores
+            verificar_todos_sensores();
+            
+            // Verificar cada vaga individualmente
+            for (int i = 0; i < NUM_SENSORES; i++) {
+                bool current_state = estados_vagas[i];
                 
-                const char *status_msg = current_state ? "LIVRE" : "OCUPADA";
-                
-                printf("Enviando para broker: tópico='%s', mensagem='%s'\n", topic_status, status_msg);
-                
-                // Enviar mensagem MQTT
-                mqtt_comm_publish(topic_status, (const uint8_t*)status_msg, strlen(status_msg));
-                printf("Status enviado para o broker! \n");
-                print_oled(status_msg, "Enviado MQTT", "");
-                
-                // Aguardar um pouco após o envio
-                sleep_ms(1000);
-                
-                last_state = current_state;
+                // Se o estado da vaga mudou, envia para o broker
+                if (current_state != last_states[i]) {
+                    printf("📍 Vaga %d mudou de estado: %s\n", i+1, current_state ? "LIVRE" : "OCUPADA");
+                    
+                    const char *status_msg = current_state ? "LIVRE" : "OCUPADA";
+                    
+                    printf("Enviando para broker: tópico='%s', mensagem='%s'\n", topics_status[i], status_msg);
+                    
+                    // Enviar mensagem MQTT
+                    mqtt_comm_publish(topics_status[i], (const uint8_t*)status_msg, strlen(status_msg));
+                    printf("Status da vaga %d enviado para o broker!\n", i+1);
+                    
+                    // Mostrar no display a última mudança
+                    char vaga_info[20];
+                    snprintf(vaga_info, sizeof(vaga_info), "Vaga %d: %s", i+1, status_msg);
+                    print_oled("Status Enviado", vaga_info, "MQTT OK");
+                    
+                    // Aguardar um pouco após o envio
+                    sleep_ms(500);
+                    
+                    last_states[i] = current_state;
+                }
             }
             
-            // Verificações de conexão com timeouts
+            // Mostrar resumo no display e verificar conexões
+            static uint32_t last_display_update = 0;
             static uint32_t last_check = 0;
-            uint32_t now = to_ms_since_boot(get_absolute_time()); // Tempo atual em milissegundos
+            uint32_t now = to_ms_since_boot(get_absolute_time());
             
-            if (now - last_check > 60000) { // Verificar a cada 60 segundos
+            // Atualizar display a cada 10 segundos
+            if (now - last_display_update > 10000) {
+                int vagas_livres = 0;
+                for (int i = 0; i < NUM_SENSORES; i++) {
+                    if (estados_vagas[i]) vagas_livres++;
+                }
+                
+                char resumo[20];
+                snprintf(resumo, sizeof(resumo), "%d/%d Livres", vagas_livres, NUM_SENSORES);
+                print_oled("Smart Parking", resumo, "Sistema Ativo");
+                
+                last_display_update = now;
+            }
+            
+            // Verificações de conexão com timeouts a cada 60 segundos
+            if (now - last_check > 60000) {
                 if (!is_connected()) {
                     printf("⚠️ WiFi desconectado!\n");
                     wifi_connected = false;
