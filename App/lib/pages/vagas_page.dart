@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
 import 'mapa_ifrn_jc.dart'; // Mapa do campus João Câmara
 import 'home_page.dart'; // Página inicial
+import 'package:estacionamento_app/mqtt_service.dart';
 
 class VagasJCPage extends StatefulWidget {
   const VagasJCPage({super.key});
@@ -14,13 +15,44 @@ class VagasJCPage extends StatefulWidget {
 }
 
 class _VagasPageState extends State<VagasJCPage> {
+  final MqttService mqttService = MqttService();
+  // Aqui é o dicionário que vamos armazenar o status das vagas que vem do mqtt
+  Map<String, String> vagaStatus = {};
+  // Está lista serve para guardar os valores de forma boleana que vem da comunicação do app com o Broker
   late List<bool> vagasDisponiveis;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa as vagas com status aleatório (disponível ou ocupada)
-    vagasDisponiveis = List.generate(10, (_) => Random().nextBool());
+    // este código intância 10 valores verdadeiros dentro da lista de "vagasDisponiveis"
+    vagasDisponiveis = List.generate(10, (_) => true);
+    //comunicação com o broker
+    mqttService.onMessageReceived = (topic, message) {
+      setState(() {
+        vagaStatus[topic] = message;
+      });
+      // Este codigo torna o dicionário em lista e captura a posição dos valores correspondente ao status de cada vaga;
+      // Exemplo da primeira interação: {ha/desafio09/yuri.aquino/ssp/vaga01: "LIVRE"} <---- vagaStatus
+      // ["ha/desafio09/yuri.aquino/ssp/vaga01"] <---- vagaStatus.keys.toList()
+      // 0 <---- vagaStatus.keys.toList().indexOf(topic), o metodo .indexOf() retorna o valor da posição do topico
+           int index = vagaStatus.keys.toList().indexOf(topic);
+      // verificar se o "index" é diferente ou igual a -1 para ter certeza se pode ser usado como indexador na lista "vagasDisponiveis"
+      if (index != -1) {
+        // verificar se a messagem que vem do broker é "LIVRE" e adiciona o valor boleano a lista "vagasDisponiveis" na posicão indicada pelo indexador
+        // O status de cada vaga é adicionado respectivamente de acordo com a sua posicao no estacionamento. Ex: a vaga01 corresponde ao primeiro valor da lista "vagadisponiveis" e assim por diante
+        vagasDisponiveis[index] = (message == "LIVRE"); // lembrando que "message" vem da comunicaçao com o Broker
+      }
+    };
+
+    mqttService.connect();
+    super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    mqttService.disconnect();
+    super.dispose();
   }
 
   @override
@@ -141,27 +173,30 @@ class _VagasPageState extends State<VagasJCPage> {
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: 5, // 5 linhas, 2 vagas por linha = 10 vagas
+                itemCount: (vagasDisponiveis.length / 2).ceil(), // total de linhas e de acordo com a metade do tamanho da lista
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2;
-                  int rightIndex = i * 2 + 1;
+                  int leftIndex = i; // Vagas da esquerda (1 a 5)
+                  int rightIndex = i + 5; // Vagas da direira (6 a 10)
 
                   return Column(
+
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
 
-                          // Linha amarela vertical entre as vagas
+                         // chamada aa função que mostar o card, passando a posição e o valor boleano (true ou false) do status da vaga
+                          _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]), // vagas: 1, 2, 3, 4, 5
+
+                          _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]), // vagas: 6, 7, 8, 9, 10
 
 
-                          _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
                         ],
                       ),
 
+
                       // Linha amarela horizontal entre linhas, exceto a última
-                      if (i < 4)
+                      if (i < (vagasDisponiveis.length / 2).ceil() -1 ) // o tamanho da lista é divido na metade, aredondado  para menos e retirando 1 (para não exibir uma linha apos a ultima posição)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: SizedBox(
@@ -171,7 +206,7 @@ class _VagasPageState extends State<VagasJCPage> {
                               children: [
                                 Container(
                                   height: 2,
-                                  width: 100, // Reduzir para evitar overflow
+                                  width: 100,
                                   color: Colors.yellow[400],
                                 ),
                                 Container(
@@ -183,13 +218,6 @@ class _VagasPageState extends State<VagasJCPage> {
                             ),
                           ),
                         ),
-
-                      //Container(
-                          //height: 2,
-                          //margin: const EdgeInsets.symmetric(vertical: 6),
-                          //color: Colors.yellow,
-                          //width: double.infinity,
-                        //),
                     ],
                   );
                 },
@@ -227,11 +255,11 @@ class _VagasPageState extends State<VagasJCPage> {
               Icon(
                 Icons.circle,
                 size: 16,
-                color: isDisponivel ? Colors.black26 : Colors.black54,
+                color: isDisponivel ? Colors.black26 : Colors.black54, // muda a cor de acordo com o valor boleando passado ao chamar a função
               ),
               const SizedBox(width: 10),
               Text(
-                isDisponivel ? 'DISPONÍVEL' : 'OCUPADA',
+                isDisponivel ? 'DISPONÍVEL' : 'OCUPADA', // muda o texto de acordo com o valor boleando passado ao chamar a função
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
