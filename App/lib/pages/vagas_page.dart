@@ -1,41 +1,70 @@
-// Tela de vagas do campus Natal Central (CNAT)
-import 'dart:math'; // Para gerar valores aleatórios
+// Tela de vagas para o campus João Câmara 
+import 'dart:math';
+import 'package:estacionamento_app/utils/fade_page_route.dart';
 import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
-import 'mapa_ifrn_cnat.dart'; // Mapa do campus NATAL Central
-import 'home_page.dart';
-import '../utils/fade_page_route.dart'; // Rota personalizada com transição em fade
+import 'mapa_ifrn_jc.dart'; // Mapa do campus João Câmara
+import 'home_page.dart'; // Página inicial
+import 'package:estacionamento_app/mqtt_service.dart';
 
-
-// Widget stateful porque a lista de vagas disponíveis pode mudar
-class VagasCNATPage extends StatefulWidget {
-  const VagasCNATPage({super.key});
+class VagasJCPage extends StatefulWidget {
+  const VagasJCPage({super.key});
 
   @override
-  State<VagasCNATPage> createState() => _VagasCNATPageState();
+  State<VagasJCPage> createState() => _VagasPageState();
 }
 
-class _VagasCNATPageState extends State<VagasCNATPage> {
-  // Lista que guarda o estado (disponível ou ocupada) das vagas
+class _VagasPageState extends State<VagasJCPage> {
+  final MqttService mqttService = MqttService();
+  // Aqui é o dicionário que vamos armazenar o status das vagas que vem do mqtt
+  Map<String, String> vagaStatus = {};
+  // Está lista serve para guardar os valores de forma boleana que vem da comunicação do app com o Broker
   late List<bool> vagasDisponiveis;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa a lista com 10 vagas, cada uma com status aleatório (true/false)
-    vagasDisponiveis = List.generate(10, (_) => Random().nextBool());
+    // este código intância 10 valores verdadeiros dentro da lista de "vagasDisponiveis"
+    vagasDisponiveis = List.generate(10, (_) => true);
+    //comunicação com o broker
+    mqttService.onMessageReceived = (topic, message) {
+      setState(() {
+        vagaStatus[topic] = message;
+      });
+      // Este codigo torna o dicionário em lista e captura a posição dos valores correspondente ao status de cada vaga;
+      // Exemplo da primeira interação: {ha/desafio09/yuri.aquino/ssp/vaga01: "LIVRE"} <---- vagaStatus
+      // ["ha/desafio09/yuri.aquino/ssp/vaga01"] <---- vagaStatus.keys.toList()
+      // 0 <---- vagaStatus.keys.toList().indexOf(topic), o metodo .indexOf() retorna o valor da posição do topico
+           int index = vagaStatus.keys.toList().indexOf(topic);
+      // verificar se o "index" é diferente ou igual a -1 para ter certeza se pode ser usado como indexador na lista "vagasDisponiveis"
+      if (index != -1) {
+        // verificar se a messagem que vem do broker é "LIVRE" e adiciona o valor boleano a lista "vagasDisponiveis" na posicão indicada pelo indexador
+        // O status de cada vaga é adicionado respectivamente de acordo com a sua posicao no estacionamento. Ex: a vaga01 corresponde ao primeiro valor da lista "vagadisponiveis" e assim por diante
+        vagasDisponiveis[index] = (message == "LIVRE"); // lembrando que "message" vem da comunicaçao com o Broker
+      }
+    };
+
+    mqttService.connect();
+    super.initState();
+  }
+
+
+  @override
+  void dispose() {
+    mqttService.disconnect();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[800], // Fundo escuro da tela
+      backgroundColor: Colors.grey[800], // fundo escuro
       body: SafeArea(
         child: Column(
           children: [
-            const HeaderWidget(), // Cabeçalho personalizado no topo
+            const HeaderWidget(), // cabeçalho no topo
 
-            // Barra branca fixa com botões "Voltar", "Vagas" e "Mapa"
+            // Barra branca fixa com botão voltar e botões Vagas/Mapa
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
@@ -43,7 +72,7 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween, // Coloca espaço entre os filhos principais
                 children: [
                   // 1. Botão de Voltar (será alinhado à esquerda)
-                  IconButton( // Botão de voltar
+                  IconButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
@@ -63,7 +92,7 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ElevatedButton( // Botão "Vagas"
+                      ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1976D2),
@@ -73,11 +102,11 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                         child: const Text('Vagas', style: TextStyle(color: Colors.white)),
                       ),
                       const SizedBox(width: 10), // Espaçamento entre os botões
-                      OutlinedButton( // Botão "Mapa"
+                      OutlinedButton(
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            FadePageRoute(page: const MapaIFRNCNATPage()),
+                            FadePageRoute(page: const MapaIFRNJCPage())
                           );
                         },
                         style: OutlinedButton.styleFrom(
@@ -126,11 +155,11 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
               ),
             ),
 
-            const SizedBox(height: 10), // Espaço entre a barra e o título
+            const SizedBox(height: 10),
 
-            // Título do estacionamento (campus)
+            // Título que exibe o nome do estacionamento recebido por parâmetro
             const Text(
-              'IFRN - NATAL CENTRAL',
+              'IFRN - JOÃO CÂMARA',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -138,33 +167,36 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
               ),
             ),
 
-            const SizedBox(height: 10), // Espaço antes da lista de vagas
+            const SizedBox(height: 10),
 
-            // Lista de vagas que ocupa o restante da tela
+            // Lista de vagas exibida em linhas, com duas vagas por linha
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: 5, // 5 linhas de vagas (cada linha tem 2 vagas)
+                itemCount: (vagasDisponiveis.length / 2).ceil(), // total de linhas e de acordo com a metade do tamanho da lista
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2; // índice da vaga da esquerda
-                  int rightIndex = i * 2 + 1; // índice da vaga da direita
+                  int leftIndex = i; // Vagas da esquerda (1 a 5)
+                  int rightIndex = i + 5; // Vagas da direira (6 a 10)
 
                   return Column(
+
                     children: [
-                      // Linha com duas vagas e uma linha amarela vertical no meio
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
 
-                          // Linha amarela vertical entre as vagas
+                         // chamada aa função que mostar o card, passando a posição e o valor boleano (true ou false) do status da vaga
+                          _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]), // vagas: 1, 2, 3, 4, 5
 
-                          _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
+                          _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]), // vagas: 6, 7, 8, 9, 10
+
+
                         ],
                       ),
 
-                      // Linha amarela horizontal separadora entre as linhas, exceto a última
-                      if (i < 4)
+
+                      // Linha amarela horizontal entre linhas, exceto a última
+                      if (i < (vagasDisponiveis.length / 2).ceil() -1 ) // o tamanho da lista é divido na metade, aredondado  para menos e retirando 1 (para não exibir uma linha apos a ultima posição)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: SizedBox(
@@ -174,7 +206,7 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                               children: [
                                 Container(
                                   height: 2,
-                                  width: 100, // Reduzir para evitar overflow
+                                  width: 100,
                                   color: Colors.yellow[400],
                                 ),
                                 Container(
@@ -186,7 +218,6 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                             ),
                           ),
                         ),
-
                     ],
                   );
                 },
@@ -198,41 +229,37 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
     );
   }
 
-  // Método que retorna o widget que representa uma vaga
+  // Widget para exibir cada vaga
   Widget _buildVagaCard(int numero, bool isDisponivel) {
     return Container(
-      width: 150, // largura fixa
+      width: 150,
       decoration: BoxDecoration(
-        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde se disponível, vermelho se ocupada
-        borderRadius: BorderRadius.circular(20), // cantos arredondados
+        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde para disponível, vermelho para ocupada
+        borderRadius: BorderRadius.circular(20),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), // espaçamento interno
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
-          // Número da vaga (ajustado para começar de 1)
           Text(
-            '${numero + 1}',
+            '${numero + 1}', // Número da vaga começando em 1
             style: const TextStyle(
               color: Colors.yellow,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
-
-          const SizedBox(height: 8), // espaçamento vertical
-
-          // Status da vaga com ícone e texto
+          const SizedBox(height: 8),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.circle,
                 size: 16,
-                color: isDisponivel ? Colors.black26 : Colors.black54, // cor do ícone conforme status
+                color: isDisponivel ? Colors.black26 : Colors.black54, // muda a cor de acordo com o valor boleando passado ao chamar a função
               ),
               const SizedBox(width: 10),
               Text(
-                isDisponivel ? 'DISPONÍVEL' : 'OCUPADA',
+                isDisponivel ? 'DISPONÍVEL' : 'OCUPADA', // muda o texto de acordo com o valor boleando passado ao chamar a função
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

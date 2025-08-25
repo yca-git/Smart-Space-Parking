@@ -1,53 +1,53 @@
-// Tela de vagas para o campus Natal Zona Norte (ZN)
+// Tela de vagas do campus Natal Central (CNAT)
 import 'dart:math'; // Para gerar valores aleatórios
-import 'package:estacionamento_app/utils/fade_page_route.dart';
 import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
-import 'home_page.dart'; // Página inicial
-import '../utils/fade_page_route.dart';
-import 'mapa_ifrn_zn.dart'; // Mapa da zona norte
+import 'mapa_ifrn_cnat.dart'; // Mapa do campus NATAL Central
+import 'home_page.dart';
+import '../utils/fade_page_route.dart'; // Rota personalizada com transição em fade
 
-// Stateful pois o status das vagas é variável
-class VagasZNPage extends StatefulWidget {
-  const VagasZNPage({super.key});
+
+// Widget stateful porque a lista de vagas disponíveis pode mudar
+class VagasCNATPage extends StatefulWidget {
+  const VagasCNATPage({super.key});
 
   @override
-  State<VagasZNPage> createState() => _VagasZNPageState();
+  State<VagasCNATPage> createState() => _VagasCNATPageState();
 }
 
-class _VagasZNPageState extends State<VagasZNPage> {
+class _VagasCNATPageState extends State<VagasCNATPage> {
+  // Lista que guarda o estado (disponível ou ocupada) das vagas
   late List<bool> vagasDisponiveis;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa 10 vagas com status aleatório (disponível ou ocupada)
+    // Inicializa a lista com 10 vagas, cada uma com status aleatório (true/false)
     vagasDisponiveis = List.generate(10, (_) => Random().nextBool());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[800], // Fundo escuro
+      backgroundColor: Colors.grey[800], // Fundo escuro da tela
       body: SafeArea(
         child: Column(
           children: [
-            const HeaderWidget(), // Cabeçalho no topo
+            const HeaderWidget(), // Cabeçalho personalizado no topo
 
-            // Barra branca com botão voltar, e botões Vagas e Mapa
+            // Barra branca fixa com botões "Voltar", "Vagas" e "Mapa"
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween, // Coloca espaço entre os filhos principais
                 children: [
-                  // 1. Botão de Voltar, pressionado leva a página inicial com transição em fade
-                  IconButton(
+                  // 1. Botão de Voltar (será alinhado à esquerda)
+                  IconButton( // Botão de voltar
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        FadePageRoute(
-                            page: const HomePage()
+                        FadePageRoute(page: const HomePage()
                         ),
                       );
                     },
@@ -63,7 +63,7 @@ class _VagasZNPageState extends State<VagasZNPage> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ElevatedButton( // Botão Vagas, pressionado não faz nada
+                      ElevatedButton( // Botão "Vagas"
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1976D2),
@@ -73,13 +73,11 @@ class _VagasZNPageState extends State<VagasZNPage> {
                         child: const Text('Vagas', style: TextStyle(color: Colors.white)),
                       ),
                       const SizedBox(width: 10), // Espaçamento entre os botões
-                      OutlinedButton( // Botão Mapa, pressionado leva a página do mapa zn com transição em fade
+                      OutlinedButton( // Botão "Mapa"
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            FadePageRoute(
-                              page: const mapaIFRNz()
-                            )
+                            FadePageRoute(page: const MapaIFRNCNATPage()),
                           );
                         },
                         style: OutlinedButton.styleFrom(
@@ -128,11 +126,11 @@ class _VagasZNPageState extends State<VagasZNPage> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 10), // Espaço entre a barra e o título
 
-            // Título do estacionamento
+            // Título do estacionamento (campus)
             const Text(
-              'IFRN - NATAL ZONA NORTE',
+              'IFRN - NATAL CENTRAL',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -140,29 +138,32 @@ class _VagasZNPageState extends State<VagasZNPage> {
               ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 10), // Espaço antes da lista de vagas
 
-            // Lista de vagas
+            // Lista de vagas que ocupa o restante da tela
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: 5, // 5 linhas de vagas
+                itemCount: 5, // 5 linhas de vagas (cada linha tem 2 vagas)
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2;
-                  int rightIndex = i * 2 + 1;
+                  int leftIndex = i; // índice da vaga da esquerda
+                  int rightIndex = i + 5; // índice da vaga da direita
 
                   return Column(
                     children: [
-                      // Linha com duas vagas e linha amarela vertical entre elas
+                      // Linha com duas vagas e uma linha amarela vertical no meio
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
+
+                          // Linha amarela vertical entre as vagas
+
                           _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
                         ],
                       ),
 
-                      // Linha amarela horizontal separando as linhas (exceto a última)
+                      // Linha amarela horizontal separadora entre as linhas, exceto a última
                       if (i < 4)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -197,33 +198,37 @@ class _VagasZNPageState extends State<VagasZNPage> {
     );
   }
 
-  // Widget para exibir cada vaga individualmente
+  // Método que retorna o widget que representa uma vaga
   Widget _buildVagaCard(int numero, bool isDisponivel) {
     return Container(
-      width: 150,
+      width: 150, // largura fixa
       decoration: BoxDecoration(
-        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde ou vermelho
-        borderRadius: BorderRadius.circular(20),
+        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde se disponível, vermelho se ocupada
+        borderRadius: BorderRadius.circular(20), // cantos arredondados
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), // espaçamento interno
       child: Column(
         children: [
+          // Número da vaga (ajustado para começar de 1)
           Text(
-            '${numero + 1}', // número da vaga começando em 1
+            '${numero + 1}',
             style: const TextStyle(
               color: Colors.yellow,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
-          const SizedBox(height: 8),
+
+          const SizedBox(height: 8), // espaçamento vertical
+
+          // Status da vaga com ícone e texto
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.circle,
                 size: 16,
-                color: isDisponivel ? Colors.black26 : Colors.black54,
+                color: isDisponivel ? Colors.black26 : Colors.black54, // cor do ícone conforme status
               ),
               const SizedBox(width: 10),
               Text(

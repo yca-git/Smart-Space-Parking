@@ -1,50 +1,53 @@
-// Tela de vagas para o campus João Câmara 
-import 'dart:math';
+// Tela de vagas para o campus Natal Zona Norte (ZN)
+import 'dart:math'; // Para gerar valores aleatórios
 import 'package:estacionamento_app/utils/fade_page_route.dart';
 import 'package:flutter/material.dart';
 import '../utils/header.dart'; // Cabeçalho personalizado
-import 'mapa_ifrn_jc.dart'; // Mapa do campus João Câmara
 import 'home_page.dart'; // Página inicial
+import '../utils/fade_page_route.dart';
+import 'mapa_ifrn_zn.dart'; // Mapa da zona norte
 
-class VagasJCPage extends StatefulWidget {
-  const VagasJCPage({super.key});
+// Stateful pois o status das vagas é variável
+class VagasZNPage extends StatefulWidget {
+  const VagasZNPage({super.key});
 
   @override
-  State<VagasJCPage> createState() => _VagasPageState();
+  State<VagasZNPage> createState() => _VagasZNPageState();
 }
 
-class _VagasPageState extends State<VagasJCPage> {
+class _VagasZNPageState extends State<VagasZNPage> {
   late List<bool> vagasDisponiveis;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa as vagas com status aleatório (disponível ou ocupada)
+    // Inicializa 10 vagas com status aleatório (disponível ou ocupada)
     vagasDisponiveis = List.generate(10, (_) => Random().nextBool());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[800], // fundo escuro
+      backgroundColor: Colors.grey[800], // Fundo escuro
       body: SafeArea(
         child: Column(
           children: [
-            const HeaderWidget(), // cabeçalho no topo
+            const HeaderWidget(), // Cabeçalho no topo
 
-            // Barra branca fixa com botão voltar e botões Vagas/Mapa
+            // Barra branca com botão voltar, e botões Vagas e Mapa
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween, // Coloca espaço entre os filhos principais
                 children: [
-                  // 1. Botão de Voltar (será alinhado à esquerda)
+                  // 1. Botão de Voltar, pressionado leva a página inicial com transição em fade
                   IconButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        FadePageRoute(page: const HomePage()
+                        FadePageRoute(
+                            page: const HomePage()
                         ),
                       );
                     },
@@ -60,7 +63,7 @@ class _VagasPageState extends State<VagasJCPage> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      ElevatedButton(
+                      ElevatedButton( // Botão Vagas, pressionado não faz nada
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1976D2),
@@ -70,11 +73,13 @@ class _VagasPageState extends State<VagasJCPage> {
                         child: const Text('Vagas', style: TextStyle(color: Colors.white)),
                       ),
                       const SizedBox(width: 10), // Espaçamento entre os botões
-                      OutlinedButton(
+                      OutlinedButton( // Botão Mapa, pressionado leva a página do mapa zn com transição em fade
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            FadePageRoute(page: const MapaIFRNJCPage())
+                            FadePageRoute(
+                              page: const mapaIFRNz()
+                            )
                           );
                         },
                         style: OutlinedButton.styleFrom(
@@ -125,9 +130,9 @@ class _VagasPageState extends State<VagasJCPage> {
 
             const SizedBox(height: 10),
 
-            // Título que exibe o nome do estacionamento recebido por parâmetro
+            // Título do estacionamento
             const Text(
-              'IFRN - JOÃO CÂMARA',
+              'IFRN - NATAL ZONA NORTE',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -137,30 +142,27 @@ class _VagasPageState extends State<VagasJCPage> {
 
             const SizedBox(height: 10),
 
-            // Lista de vagas exibida em linhas, com duas vagas por linha
+            // Lista de vagas
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: 5, // 5 linhas, 2 vagas por linha = 10 vagas
+                itemCount: 5, // 5 linhas de vagas
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2;
-                  int rightIndex = i * 2 + 1;
+                  int leftIndex = i; // índice da vaga da esquerda
+                  int rightIndex = i + 5;
 
                   return Column(
                     children: [
+                      // Linha com duas vagas e linha amarela vertical entre elas
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildVagaCard(leftIndex, vagasDisponiveis[leftIndex]),
-
-                          // Linha amarela vertical entre as vagas
-
-
                           _buildVagaCard(rightIndex, vagasDisponiveis[rightIndex]),
                         ],
                       ),
 
-                      // Linha amarela horizontal entre linhas, exceto a última
+                      // Linha amarela horizontal separando as linhas (exceto a última)
                       if (i < 4)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -184,12 +186,6 @@ class _VagasPageState extends State<VagasJCPage> {
                           ),
                         ),
 
-                      //Container(
-                          //height: 2,
-                          //margin: const EdgeInsets.symmetric(vertical: 6),
-                          //color: Colors.yellow,
-                          //width: double.infinity,
-                        //),
                     ],
                   );
                 },
@@ -201,19 +197,19 @@ class _VagasPageState extends State<VagasJCPage> {
     );
   }
 
-  // Widget para exibir cada vaga
+  // Widget para exibir cada vaga individualmente
   Widget _buildVagaCard(int numero, bool isDisponivel) {
     return Container(
       width: 150,
       decoration: BoxDecoration(
-        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde para disponível, vermelho para ocupada
+        color: isDisponivel ? Colors.green[300] : Colors.red[300], // verde ou vermelho
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
           Text(
-            '${numero + 1}', // Número da vaga começando em 1
+            '${numero + 1}', // número da vaga começando em 1
             style: const TextStyle(
               color: Colors.yellow,
               fontWeight: FontWeight.bold,
