@@ -146,8 +146,8 @@ class _VagasCNATPageState extends State<VagasCNATPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemCount: 5, // 5 linhas de vagas (cada linha tem 2 vagas)
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2; // índice da vaga da esquerda
-                  int rightIndex = i * 2 + 1; // índice da vaga da direita
+                  int leftIndex = i; // índice da vaga da esquerda
+                  int rightIndex = i + 5; // índice da vaga da direita
 
                   return Column(
                     children: [

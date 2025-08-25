@@ -148,8 +148,8 @@ class _VagasZNPageState extends State<VagasZNPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 itemCount: 5, // 5 linhas de vagas
                 itemBuilder: (context, i) {
-                  int leftIndex = i * 2;
-                  int rightIndex = i * 2 + 1;
+                  int leftIndex = i; // índice da vaga da esquerda
+                  int rightIndex = i + 5;
 
                   return Column(
                     children: [
