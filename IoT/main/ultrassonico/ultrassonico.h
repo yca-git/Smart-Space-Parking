@@ -10,16 +10,18 @@
 // Pinos para os 5 sensores (Trigger e Echo)
 #define TRIGGER_PIN_1 16
 #define ECHO_PIN_1 18
-//#define TRIGGER_PIN_2 18
+
 #define TRIGGER_PIN_2 17
 #define ECHO_PIN_2 19
-//#define TRIGGER_PIN_3 20
-#define TRIGGER_PIN_3 28
+
+#define TRIGGER_PIN_3 16
 #define ECHO_PIN_3 20
-#define TRIGGER_PIN_4 16
+
+#define TRIGGER_PIN_4 17
 #define ECHO_PIN_4 4
-#define TRIGGER_PIN_5 17
-#define ECHO_PIN_5 9
+
+#define TRIGGER_PIN_5 16
+#define ECHO_PIN_5 8
 
 // Estrutura para armazenar informações de cada sensor
 typedef struct {

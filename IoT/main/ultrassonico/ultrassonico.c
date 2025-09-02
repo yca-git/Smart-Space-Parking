@@ -10,7 +10,7 @@ sensor_ultrassonico_t sensores[NUM_SENSORES] = {
 };
 
 bool estados_vagas[NUM_SENSORES];  // Array para armazenar o estado das vagas
-int distancia_minima = 30; // Distância mínima em cm para considerar a vaga livre
+int distancia_minima = 10; // Distância mínima em cm para considerar a vaga livre
 
 // Função para inicializar todos os sensores ultrassônicos
 void inicializar_ultrassonico() {
@@ -55,7 +55,7 @@ float obter_distancia(int sensor_id) {
     sleep_us(10);
     gpio_put(trigger_pin, 0);
 
-    printf("Sensor %d - Pulso enviado...\n", sensor_id + 1);
+    //printf("Sensor %d - Pulso enviado...\n", sensor_id + 1);
 
     absolute_time_t start_wait = get_absolute_time(); // Inicia a contagem do tempo de espera
 
@@ -85,7 +85,7 @@ float obter_distancia(int sensor_id) {
     // Converter para distância (velocidade do som = 34300 cm/s)
     float distancia_cm = (tempo_us * 0.0343f) / 2.0f;
 
-    printf("Sensor %d - Distância: %.2f cm\n", sensor_id + 1, distancia_cm); 
+    //printf("Sensor %d - Distância: %.2f cm\n", sensor_id + 1, distancia_cm); 
 
     // Atualizar a última distância lida
     sensores[sensor_id].ultima_distancia = distancia_cm;

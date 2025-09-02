@@ -1,6 +1,7 @@
-// By YCA para bitdoglab - embarcatech 2025
-//Conectar no wifi, conecta no broker mqtt através de ip e envia estado da vaga quando ha mudanças
-//Usa sensor ultrassonico para verificar estado da vaga, pino trigger no GPIO 16 e echo no GPIO 17
+// By YCA para bitdoglab - embarcatech 2025 / projeto integrador II TSI
+//Conecta no wifi, conecta no broker mqtt através de ip ou dns e envia estado da vaga quando ha mudanças
+//Usa 5 sensores hcsr04 (sensor ultrassonico) para verificar estado da vaga
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -117,7 +118,7 @@ int main() {
             } else {
                 printf("❌ Falha na conexão MQTT. Tentando novamente...\n");
                 print_oled("MQTT", "Erro!", "Tentando novamente");
-                sleep_ms(15000); // Aumentar de 5000 para 15000
+                sleep_ms(15000); 
                 continue; // Tentar novamente a conexão MQTT
             }
         }
@@ -176,7 +177,7 @@ int main() {
                 last_display_update = now;
             }
             
-            // Verificações de conexão com timeouts a cada 60 segundos
+            //Verificações de conexão com timeouts a cada 60 segundos
             if (now - last_check > 60000) {
                 if (!is_connected()) {
                     printf("⚠️ WiFi desconectado!\n");
