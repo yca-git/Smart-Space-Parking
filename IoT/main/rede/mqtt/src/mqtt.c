@@ -11,6 +11,7 @@
  * 'static' limita o escopo deste arquivo */
 static mqtt_client_t *client;
 bool conected = false;
+volatile bool mqtt_desconectou = false;
 
 // Estrutura para lidar com resolução DNS
 typedef struct {
@@ -120,6 +121,9 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
         *connected = true;
     } else {
         *connected = false;
+        conected = false; // Garante que a variável global também seja marcada
+        mqtt_desconectou = true;
+        printf("⚠️ MQTT desconectado ou erro de conexão. Tentando reconectar em breve...\n");
         // Diagnóstico detalhado do erro
         switch(status) {
             case MQTT_CONNECT_REFUSED_PROTOCOL_VERSION:

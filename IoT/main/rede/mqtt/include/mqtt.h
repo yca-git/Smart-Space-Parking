@@ -2,6 +2,7 @@
 #define MQTT_H
 #include <stdbool.h> 
 
+extern volatile bool mqtt_desconectou;
 // Function prototypes for MQTT operations
 void mqtt_setup(const char *client_id, const char *broker_addr, const char *user, const char *pass, char *text_buffe);
 // Function to publish data to a specific topic

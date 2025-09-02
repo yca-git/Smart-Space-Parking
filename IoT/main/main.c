@@ -124,6 +124,10 @@ int main() {
         }
         
         // PASSO 3: LEITURA E ENVIO DO STATUS DAS VAGAS
+        if (mqtt_desconectou == true){
+            mqtt_connected = false;
+            continue;
+        }
         if (wifi_connected && mqtt_connected) {
             printf("3️⃣ Verificando estado de todas as vagas...\n");
             
@@ -183,9 +187,11 @@ int main() {
                     printf("⚠️ WiFi desconectado!\n");
                     wifi_connected = false;
                     mqtt_connected = false;
+                    continue; // Volta ao início do loop para reconectar WiFi/MQTT
                 } else if (!mqtt_is_connected()) {
                     printf("⚠️ MQTT desconectado!\n");
                     mqtt_connected = false;
+                    continue; // Volta ao início do loop para reconectar MQTT
                 }
                 last_check = now;
             }
