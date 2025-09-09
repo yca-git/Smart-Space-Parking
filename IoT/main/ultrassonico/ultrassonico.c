@@ -10,7 +10,7 @@ sensor_ultrassonico_t sensores[NUM_SENSORES] = {
 };
 
 bool estados_vagas[NUM_SENSORES];  // Array para armazenar o estado das vagas
-int distancia_minima = 10; // Distância mínima em cm para considerar a vaga livre
+int distancia_minima = 20; // Distância mínima em cm para considerar a vaga livre
 
 // Função para inicializar todos os sensores ultrassônicos
 void inicializar_ultrassonico() {

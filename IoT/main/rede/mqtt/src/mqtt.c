@@ -119,6 +119,7 @@ static void mqtt_connection_cb(mqtt_client_t *client, void *arg, mqtt_connection
     if (status == MQTT_CONNECT_ACCEPTED) {
         printf("✅ MQTT conectado com sucesso!\n");
         *connected = true;
+        mqtt_desconectou = false;
     } else {
         *connected = false;
         conected = false; // Garante que a variável global também seja marcada
@@ -265,7 +266,7 @@ void mqtt_setup(const char *client_id, const char *broker_ip, const char *user, 
         .client_id = client_id,  // ID do cliente
         .client_user = (user && strlen(user) > 0) ? user : NULL,     // Usuário (NULL se vazio)
         .client_pass = (pass && strlen(pass) > 0) ? pass : NULL,     // Senha (NULL se vazio)
-        .keep_alive = 60,        // Keep alive de 60 segundos
+        .keep_alive = 600,        // Keep alive de 600 segundos
         .will_topic = NULL,      // Sem mensagem de última vontade
         .will_msg = NULL,
         .will_qos = 0,
