@@ -1,12 +1,13 @@
 # 🅿️ Smart Space Parking - Estacionamento Inteligente
 
+# Projeto Integrador II - TSI - IFRN - 2025
 ---
 
 ## 🚀 Breve Descrição
 
 O **Smart Space Parking** é um projeto inovador focado em soluções IoT para **Smart Cities**, com o objetivo principal de otimizar a gestão de vagas de estacionamento. Nossa solução integra hardware de baixo custo, comunicação em tempo real e um aplicativo móvel intuitivo para fornecer informações precisas sobre a disponibilidade de vagas.
 
-A fase inicial do projeto consiste no desenvolvimento de uma solução com dispositivo IoT para monitorar as vagas de um estacionamento e um aplicativo Mobile para mostrar os estados de ocupação dessas vagas. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação para um banco de dados, que por sua vez, alimenta um aplicativo Android para os usuários.
+A fase inicial do projeto consiste no desenvolvimento de uma solução com dispositivo IoT para monitorar as vagas de um estacionamento e um aplicativo Mobile para mostrar os estados de ocupação dessas vagas. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação ao aplicativo Android para os usuários.
 
 ---
 
@@ -27,7 +28,7 @@ Este projeto é uma fusão de hardware e software, utilizando as seguintes tecno
 ### Hardware (Módulo IoT)
 
 * **Microcontrolador:** **Raspberry Pi Pico W** (integrado na BitDogLab)
-    * **Motivo da Escolha:** Disponibilidade, Wi-Fi integrado e suporte robusto a MicroPython/Arduino.
+    
 * **Placa de Desenvolvimento:** **BitDogLab**
     * **Motivo da Escolha:** Facilita o protótipo com componentes integrados, bateria e entrada para carregamento com painel solar, ideal para autonomia e implementação em estacionamentos abertos.
 * **Sensores:** **Sensores Ultrassônicos HC-SR04**
@@ -37,10 +38,8 @@ Este projeto é uma fusão de hardware e software, utilizando as seguintes tecno
 
 * **Protocolo:** **MQTT**
     * **Motivo da Escolha:** Leveza, eficiência e padrão publish/subscribe ideal para transmissão de dados de sensores em tempo real.
-* **Broker MQTT:** **HiveMQ Cloud (Plano Serverless Free)**
-    * **Motivo da Escolha:** Broker MQTT gerenciado, gratuito para protótipos, confiável e com suporte a webhooks para integração com Cloud Functions.
 
-### Backend & Banco de Dados
+### Backend & Banco de Dados (Ainda não implementado)
 
 * **Funções Serverless:** **Firebase Cloud Functions**
     * **Motivo da Escolha:** Atua como a "ponte" entre o broker MQTT e o banco de dados. Recebe os dados via webhook do HiveMQ e os grava no Realtime Database, sem a necessidade de gerenciar servidores.
@@ -51,7 +50,7 @@ Este projeto é uma fusão de hardware e software, utilizando as seguintes tecno
 
 * **Plataforma de Desenvolvimento:** **Android Studio com Flutter**
     * **Motivo da Escolha:** Permite o desenvolvimento de um único código-fonte para múltiplas plataformas (Android inicialmente), com performance nativa e hot reload para agilidade no desenvolvimento.
-* **SDK do Banco de Dados:** **Firebase SDK para Flutter**
+* **SDK do Banco de Dados:** **Firebase SDK para Flutter** (Não implementado) 
     * **Motivo da Escolha:** Integração nativa e eficiente com o Firebase Realtime Database para exibição de dados em tempo real no aplicativo.
 
 ---
