@@ -69,13 +69,9 @@ graph TD
     %% Definindo os Casos de Uso
     UC1(Monitorar Vagas em Tempo Real)
     UC2(Visualizar Status de Vagas)
-    UC3(Receber Notificações de Vaga)
     UC4(Detectar Ocupação da Vaga)
-    UC5(Enviar Status da Vaga)
     UC6(Gerenciar Vagas)
     UC7(Ajustar Configurações do Dispositivo)
-    UC8(Atualizar Banco de Dados)
-    UC9(Acessar Relatórios de Uso)
 
     %% Relacionamentos
     User --> UC2
@@ -97,28 +93,6 @@ graph TD
     UC2 --> UC1
     UC3 --> UC1
 ```
----
-<<!-- ## Diagrama Entidade-Relacionamento do Banco de Dados
-```mermaid
-
-erDiagram
-    INSTITUITION ||--o{ PARKING_SPOT : "possui"
-
-    INSTITUITION {
-        string id PK "ID único da instituição (ex: IFRN)"
-        string name "Nome da instituição"
-        string location "Localização da instituição"
-    }
-
-    PARKING_SPOT {
-        string id PK "ID único da vaga (ex: A1, B2)"
-        string institution_id FK "ID da instituição a qual a vaga pertence"
-        string status "Status atual da vaga (livre, ocupada)"
-        string last_updated "Timestamp da última atualização (opcional)"
-        string description "Descrição da vaga (ex: Perto da entrada principal)"
-    }
-```
--->
 ---
 ## Telas 
 #### Home
