@@ -69,29 +69,23 @@ graph TD
     %% Definindo os Casos de Uso
     UC1(Monitorar Vagas em Tempo Real)
     UC2(Visualizar Status de Vagas)
-    UC4(Detectar Ocupação da Vaga)
-    UC6(Gerenciar Vagas)
-    UC7(Ajustar Configurações do Dispositivo)
+    UC3(Detectar Ocupação da Vaga)
+    UC4(Gerenciar Vagas)
+    UC5(Ajustar Configurações do Dispositivo)
 
     %% Relacionamentos
     User --> UC2
-    User --> UC3
 
     IoTDevice --> UC4
-    UC4 --> UC5
-    UC5 --> UC8
+    UC3 --> UC5
 
-    Admin --> UC6
-    Admin --> UC7
-    Admin --> UC9
+    Admin --> UC4
+    Admin --> UC5
     Admin --> UC1
 
     %% Inclusões (usando setas normais para maior compatibilidade)
-    UC1 --> UC4
-    UC1 --> UC5
-    UC1 --> UC8
+    UC1 --> UC3
     UC2 --> UC1
-    UC3 --> UC1
 ```
 ---
 ## Telas 
