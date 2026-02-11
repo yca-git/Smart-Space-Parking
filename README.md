@@ -7,7 +7,7 @@
 
 O **Smart Space Parking** é um projeto inovador focado em soluções IoT para **Smart Cities**, com o objetivo principal de otimizar a gestão de vagas de estacionamento. Nossa solução integra hardware de baixo custo, comunicação em tempo real e um aplicativo móvel intuitivo para fornecer informações precisas sobre a disponibilidade de vagas.
 
-A fase inicial do projeto consiste no desenvolvimento de uma solução com dispositivo IoT para monitorar as vagas de um estacionamento e um aplicativo Mobile para mostrar os estados de ocupação dessas vagas. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação ao aplicativo Android para os usuários.
+A fase inicial do projeto consiste no desenvolvimento de uma solução com dispositivo IoT para monitorar as vagas de um estacionamento e um aplicativo Mobile para mostrar os estados de ocupação dessas vagas. O sistema detecta o estado de ocupação de cada vaga (livre/ocupada) e transmite essa informação a um broker MQTT, que por sua vez envia as informações de estado da vaga para o aplicativo Android.
 
 ---
 
@@ -39,19 +39,10 @@ Este projeto é uma fusão de hardware e software, utilizando as seguintes tecno
 * **Protocolo:** **MQTT**
     * **Motivo da Escolha:** Leveza, eficiência e padrão publish/subscribe ideal para transmissão de dados de sensores em tempo real.
 
-### Backend & Banco de Dados (Ainda não implementado)
-
-* **Funções Serverless:** **Firebase Cloud Functions**
-    * **Motivo da Escolha:** Atua como a "ponte" entre o broker MQTT e o banco de dados. Recebe os dados via webhook do HiveMQ e os grava no Realtime Database, sem a necessidade de gerenciar servidores.
-* **Banco de Dados:** **Firebase Realtime Database**
-    * **Motivo da Escolha:** Banco de dados NoSQL em tempo real, simples de usar, com um plano gratuito (Spark Plan) generoso, e excelente integração com aplicativos Flutter.
-
 ### Aplicativo Móvel
 
 * **Plataforma de Desenvolvimento:** **Android Studio com Flutter**
     * **Motivo da Escolha:** Permite o desenvolvimento de um único código-fonte para múltiplas plataformas (Android inicialmente), com performance nativa e hot reload para agilidade no desenvolvimento.
-* **SDK do Banco de Dados:** **Firebase SDK para Flutter** (Não implementado) 
-    * **Motivo da Escolha:** Integração nativa e eficiente com o Firebase Realtime Database para exibição de dados em tempo real no aplicativo.
 
 ---
 ## 📊 Diagrama de Caso de Uso
@@ -59,33 +50,26 @@ Este projeto é uma fusão de hardware e software, utilizando as seguintes tecno
 Aqui está um diagrama de caso de uso que ilustra as principais funcionalidades do sistema e as interações entre os usuários e o dispositivo IoT.
 
 ```mermaid
-graph TD
+flowchart LR
 
-    %% Definindo Atores como nós simples
-    User[Usuário do Aplicativo]
-    Admin[Mantenedor do Sistema]
-    IoTDevice[Dispositivo IoT]
+    %% Atores
+    Usuario["<Actor>Usuário"]
+    Dispositivo["<Actor>Dispositivo IoT"]
 
-    %% Definindo os Casos de Uso
-    UC1(Monitorar Vagas em Tempo Real)
-    UC2(Visualizar Status de Vagas)
-    UC3(Detectar Ocupação da Vaga)
-    UC4(Gerenciar Vagas)
-    UC5(Ajustar Configurações do Dispositivo)
+    %% Sistema
+    subgraph Sistema["Smart Space Parking System"]
+        UC1((Monitorar Ocupação da Vaga))
+        UC2((Atualizar Estado da Vaga))
+        UC3((Consultar Disponibilidade da Vaga))
 
-    %% Relacionamentos
-    User --> UC2
+        UC2 -. "<include>" .-> UC1
+    end
 
-    IoTDevice --> UC4
-    UC3 --> UC5
+    %% Associações
+    Usuario --- UC3
+    Dispositivo --- UC2
 
-    Admin --> UC4
-    Admin --> UC5
-    Admin --> UC1
 
-    %% Inclusões (usando setas normais para maior compatibilidade)
-    UC1 --> UC3
-    UC2 --> UC1
 ```
 ---
 ## Telas 
