@@ -98,7 +98,7 @@ graph TD
     UC3 --> UC1
 ```
 ---
-## Diagrama Entidade-Relacionamento do Banco de Dados
+<<!-- ## Diagrama Entidade-Relacionamento do Banco de Dados
 ```mermaid
 
 erDiagram
@@ -118,7 +118,7 @@ erDiagram
         string description "Descrição da vaga (ex: Perto da entrada principal)"
     }
 ```
-
+-->
 ---
 ## Telas 
 #### Home
